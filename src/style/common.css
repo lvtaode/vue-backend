@@ -90,3 +90,9 @@ html,body{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.title{ 
+    font-size:30px;
+    text-align: center;
+    margin:20px 0;
+    letter-spacing: 6px;
+}

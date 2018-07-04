@@ -16,7 +16,7 @@
 
 <style>
 	.header_container{
-			background-color: #EFF2F7;
+			background-color: #f7f7f7;
 			height: 60px;
 			display: flex;
 			justify-content: space-between;

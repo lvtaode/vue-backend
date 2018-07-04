@@ -1,6 +1,6 @@
 <template>
     <div class="explain_page">
-        <Header></Header>
+        <top-head></top-head>
         <div class="explain">
             <p>node-elm后台管理系统</p>
             <p>第一次登录的用户可以自动注册成为普通管理员</p>
@@ -10,10 +10,10 @@
     </div>
 </template>
 <script>
-    import Header from './Header'
+    import topHead from './Header'
     export default {
         components:{
-            Header
+            topHead
         }
     }
 </script>
