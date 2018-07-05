@@ -4,11 +4,11 @@
         <div class="container">
             <el-table border :data="userList" height="520" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
-                <el-table-column label="注册日期" property="register_time" width="220">
+                <el-table-column label="注册日期" prop="register_time" width="220">
                 </el-table-column>
-                <el-table-column label="用户姓名" property="username" width="220">
+                <el-table-column label="用户姓名" prop="username" width="220">
                 </el-table-column>
-                <el-table-column label="注册地址" property="address">
+                <el-table-column label="注册地址" prop="address">
                 </el-table-column>
             </el-table>
              <div class="pagination">
