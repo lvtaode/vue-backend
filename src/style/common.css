@@ -96,3 +96,10 @@ html,body{
     margin:20px 0;
     letter-spacing: 6px;
 }
+.container{
+    padding: 20px;
+}
+.pagination{
+    text-align: left;
+    margin-top:20px;
+}

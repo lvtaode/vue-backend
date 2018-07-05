@@ -31,6 +31,7 @@
             submit(){
                 console.log(this.content);
                 this.$message.success('提交成功...');
+                // this.$message.error('提交失败');
             }
         }
     }
