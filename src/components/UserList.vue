@@ -2,7 +2,7 @@
     <div>
         <Header></Header>
         <div class="container">
-            <el-table border :data="userList" height="520" highlight-current-row>
+            <el-table  :data="userList" height="520" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
                 <el-table-column label="注册日期" prop="register_time" width="220">
                 </el-table-column>
