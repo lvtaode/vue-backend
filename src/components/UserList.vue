@@ -2,7 +2,7 @@
     <div>
         <Header></Header>
         <div class="container">
-            <el-table  :data="userList" height="520" highlight-current-row>
+            <el-table  :data="userList" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
                 <el-table-column label="注册日期" prop="register_time" width="220">
                 </el-table-column>
@@ -33,6 +33,51 @@
         data(){
             return {
                 userList:[
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2012-02-23',
+                        username:'刘三姐',
+                        address:'陕西省西安市'
+                    },
+                    {
+                        register_time:'2014-09-03',
+                        username:'马大哈',
+                        address:'上海市南京路'
+                    },
+                    {
+                        register_time:'2015-10-01',
+                        username:'苏三大妈',
+                        address:'苏州市吴中区'
+                    },
+                    {
+                        register_time:'2018-04-25',
+                        username:'陈二哈',
+                        address:'陕西省咸阳市'
+                    },
                     {
                         register_time:'2012-02-23',
                         username:'刘三姐',
