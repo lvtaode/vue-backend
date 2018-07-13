@@ -69,19 +69,19 @@
                         ></el-time-select>
                     </el-form-item>
                     <el-form-item label="上传店铺头像">
-                        <el-upload class="avatar-upload" :action='formData.test'>
+                        <el-upload class="img-upload" :action='formData.test'>
                             <img v-if="formData.avatar" src="" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="上传营业执照">
-                        <el-upload class="avatar-upload" :action="formData.test">
+                        <el-upload class="img-upload" :action="formData.test">
                             <img v-if="formData.lisense" src="" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="上传餐饮服务许可证">
-                        <el-upload class="avatar-upload" :action="formData.test">
+                        <el-upload class="img-upload" :action="formData.test">
                             <img v-if="formData.permission" src="" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
