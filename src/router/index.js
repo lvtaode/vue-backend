@@ -13,13 +13,13 @@ import AdminSet from '@/components/AdminSet'
 import Visitor from '@/components/Visitor'
 import VueEdit from '@/components/VueEdit'
 import Explain from '@/components/Explain'
-
+import Login from '@/components/Login'
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path:'',
+      path:'/main',
       component:Index,
       children:[
         {
@@ -83,6 +83,9 @@ export default new Router({
           meta:["说明","说明"]
         }
       ]
+    },{
+      path:'',
+      component:Login
     }
   ]
 })
