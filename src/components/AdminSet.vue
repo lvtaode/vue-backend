@@ -11,7 +11,8 @@
                 <li>
                     <span>更换头像:</span>
                     <el-upload
-                      class="uploadImg">
+                      class="uploadImg"
+                      :action="url">
                       <img v-if="true" class="avatar" src="../assets/timg.jpg">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>    
@@ -23,6 +24,11 @@
 <script>
     import topHead from './Header'
     export default {
+        data(){
+            return{
+                url:''
+            }
+        },
         components:{
             topHead
         }
