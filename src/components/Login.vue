@@ -3,17 +3,20 @@
        <transition name="form-fade" mode="in-out">
        
         <section class="box" v-show="showLogin">
-             <p class="slogan">elm后台管理系统</p>
+            <p class="slogan">elm后台管理系统</p>
             <div class="form_box">
-                <el-form >
-                    <el-form-item>
-                        <el-input placeholder="用户名"></el-input>
+                <el-form v-model="loginForm" ref="loginForm">
+                    <el-form-item prop="username">
+                        <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item prop="password">
+                        <el-input v-model="loginForm.password" type="password" placeholder="密码"></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-input placeholder="密码"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" style="width:100%;font-size:20px;">登 录</el-button>
+                        <el-button
+                         type="primary" 
+                         @click="login('loginForm')"
+                         style="width:100%;font-size:20px;">登 录</el-button>
                     </el-form-item>
                 </el-form>
                 <div style="color:red;font-size:12px;">
@@ -28,15 +31,41 @@
     </div>
 </template>
 <script>
+    import {mapState,mapActions} from 'vuex';
     export default{
         data(){
             return{
+                loginForm:{
+                    username:'',
+                    password:''
+                },
                 showLogin:false
             }
         },
+        computed: {
+			// ...mapState(['adminInfo'])
+		},
         mounted(){
             this.showLogin=true;
-        }
+        },
+        methods:{
+            login(){
+                console.log(this.loginForm.username);
+            }
+        },
+        watch: {
+			adminInfo: function (newValue){
+                console.log(123)
+                console.log(newValue);
+				if (newValue.id) {
+					this.$message({
+                        type: 'success',
+                        message: '检测到您之前登录过，将自动登录'
+                    });
+					this.$router.push('manage')
+				}
+			}
+		}
     }
 </script>
 <style>

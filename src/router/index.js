@@ -14,6 +14,7 @@ import Visitor from '@/components/Visitor'
 import VueEdit from '@/components/VueEdit'
 import Explain from '@/components/Explain'
 import Login from '@/components/Login'
+
 Vue.use(Router)
 
 export default new Router({
