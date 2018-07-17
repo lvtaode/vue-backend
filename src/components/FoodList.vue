@@ -7,38 +7,38 @@
                     <template slot-scope="props">
                         <el-form class="table-expand" inline label-position="left">
                             <el-form-item label="食品名称">
-                                <span>{{props.row.food_name}}</span>
+                                <span>{{props.row.name}}</span>
                             </el-form-item>
                             <el-form-item label="餐馆名称">
                                 <span>{{props.row.restaurant_name}}</span>
                             </el-form-item>
                             <el-form-item label="食品ID">
-                                <span>{{props.row.food_id}}</span>
+                                <span>{{props.row.item_id}}</span>
                             </el-form-item>
                             <el-form-item label="餐馆 ID">
                                 <span>{{props.row.restaurant_id}}</span>
                             </el-form-item>
                             <el-form-item label="食品介绍">
-                                <span>{{props.row.food_intro}}</span>
+                                <span>{{props.row.description}}</span>
                             </el-form-item>
                             <el-form-item label="餐馆地址">
-                                <span>{{props.row.restaurant_addr}}</span>
+                                <span>{{props.row.restaurant_address}}</span>
                             </el-form-item>
                             <el-form-item label="食品评分">
-                                <span>{{props.row.score}}</span>
+                                <span>{{props.row.rating}}</span>
                             </el-form-item>
                             <el-form-item label="食品分类">
-                                <span>{{props.row.food_kind}}</span>
+                                <span>{{props.row.category_name}}</span>
                             </el-form-item>
                             <el-form-item label="月销量">
-                                <span>{{props.row.sale_count}}</span>
+                                <span>{{props.row.month_sales}}</span>
                             </el-form-item>               
                         </el-form>
                     </template>
                 </el-table-column>
-                <el-table-column label="食品名称" prop="food_name"></el-table-column>
-                <el-table-column label="食品介绍" prop="food_intro"></el-table-column>
-                <el-table-column label="评分" prop="score"></el-table-column>
+                <el-table-column label="食品名称" prop="name"></el-table-column>
+                <el-table-column label="食品介绍" prop="description"></el-table-column>
+                <el-table-column label="评分" prop="rating"></el-table-column>
                 <el-table-column label="操作" width="180">
                     <template slot-scope="scope">
                         <el-button size="mini">编辑</el-button>
@@ -49,10 +49,9 @@
             <div class="pagination">
                 <el-pagination @size-change="handleSizeChange"
                  @current-change="currentPage"
-                 :total="100" 
+                 :total="count" 
                  layout="total,sizes,prev, pager, next"  
-                 :page-sizes="[10,20,30,40]">
-
+                 :page-sizes="[10,20,30,40,50]">
                 </el-pagination>
             </div>
         </div>
@@ -64,63 +63,52 @@
         components:{
             Header
         },
+        mounted:function(){
+            this.$http.get('https://elm.cangdu.org/shopping/v2/foods/count').then(res=>{
+                // console.log(res.data);
+                this.count=res.data.count;
+            })
+            this.loadData();
+        },
         data(){
             return{
                 foodList:[
                     {
-                        food_name:'黄焖鸡',
-                        food_intro:'大吉大利,今晚吃鸡',
-                        score:'4.8',
+                        name:'黄焖鸡',
+                        description:'大吉大利,今晚吃鸡',
+                        rating:'4.8',
                         food_id:'12',
                         sale_count:'456',
                         restaurant_name:'天下第一鸡',
                         restaurant_id:'001',
-                        restaurant_addr:'热河路303',
-                        food_kind:'熟肉'
-                    },
-                    {
-                        food_name:'黄焖鸡',
-                        food_intro:'大吉大利,今晚吃鸡',
-                        score:'4.8',
-                        food_id:'22',
-                        sale_count:'456',
-                        restaurant_name:'天下第一鸡',
-                        restaurant_id:'002',
-                        restaurant_addr:'热河路303',
-                        food_kind:'熟肉'
-                    },
-                    {
-                        food_name:'黄焖鸡',
-                        food_intro:'大吉大利,今晚吃鸡',
-                        score:'4.8',
-                        food_id:'32',
-                        sale_count:'456',
-                        restaurant_name:'天下第一鸡',
-                        restaurant_id:'003',
-                        restaurant_addr:'热河路303',
-                        food_kind:'熟肉'
-                    },
-                    {
-                        food_name:'黄焖鸡',
-                        food_intro:'大吉大利,今晚吃鸡',
-                        score:'4.8',
-                        food_id:'42',
-                        sale_count:'456',
-                        restaurant_name:'天下第一鸡',
-                        restaurant_id:'004',
-                        restaurant_addr:'热河路303',
-                        food_kind:'熟肉'
+                        restaurant_address:'热河路303',
+                        category_name:'熟肉'
                     }
-                ]
+                ],
+                count:0,
+                offset:0,
+                limit:10
             }
         },
         methods:{
             // 每页多少条数据
             handleSizeChange:function(val){
+                this.limit=val;
+                this.loadData();
                 this.$message.success(`每页显示${val}条数据`);
             },
             currentPage:function(val){
+                this.offset=(val-1)*this.limit;
+                // console.log(this.offset)
+                this.loadData();
                  this.$message.success(`这是第${val}页`);
+            },
+            loadData:function(){
+                this.$http.get('https://elm.cangdu.org/shopping/v2/foods',{params:{limit:this.limit,offset:this.offset}}).then(res=>{
+                        console.log(res.data);
+                        this.foodList=res.data;
+                    }
+                )
             }
         }       
     }

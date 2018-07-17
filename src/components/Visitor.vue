@@ -16,18 +16,23 @@
      export default {
          data(){
              return{
-                
+                pieData:{}
              }
          },
          components:{
             Header
         },
         mounted(){
+            this.$http.get('https://elm.cangdu.org/v1/user/city/count').then(res=>{
+                    
+                    this.pieData = res.data.user_city;
+                })
             this.myChart = echarts.init(document.getElementById('visitor'));
             this.initData();
         },
         methods: {
             initData(){
+                console.log(this.pieData);
                 const option = {
                     title : {
                         text: '用户分布',
@@ -50,11 +55,11 @@
                             radius : '55%',
                             center: ['50%', '60%'],
                             data:[
-                                {value:5602, name:'北京'},
-                                {value:3656, name:'上海'},
-                                {value:2656, name:'深圳'},
-                                {value:3655, name:'杭州'},
-                                {value:9955, name:'其他'}
+                                {value:this.pieData.beijing, name:'北京'},
+                                {value:this.pieData.shanghai, name:'上海'},
+                                {value:this.pieData.shenzhen, name:'深圳'},
+                                {value:this.pieData.hangzhou, name:'杭州'},
+                                {value:this.pieData.qita, name:'其他'}
                             ],
                             itemStyle: {
                                 emphasis: {
@@ -66,7 +71,7 @@
                         }
                     ]
                 };
-
+                
                 this.myChart.setOption(option);
             }
         },

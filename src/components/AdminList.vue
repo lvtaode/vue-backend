@@ -1,8 +1,8 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container">
-            <el-table :data="userList" highlight-current-row height="520">
+        <div class="container" height="100%;">
+            <el-table :data="userList" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
                 <el-table-column label="姓名" prop="user_name" width="220">
                 </el-table-column>
@@ -36,7 +36,7 @@
         mounted:function(){
             this.getData();
             this.$http.get('https://elm.cangdu.org/admin/count').then(res=>{
-                console.log(res.data.count);
+                // console.log(res.data.count);
                 this.count=res.data.count;
             });
         },
@@ -64,12 +64,12 @@
             },
             currentPage:function(val){
                  this.$message.success(`这是第${val}页`);
-                 this.offset=val;
+                 this.offset=(val-1)*this.limit;
                  this.getData();    
             },
             getData:function(){
                 this.$http.get('https://elm.cangdu.org/admin/all',{params:{limit:this.limit,offset:this.offset}}).then(res=>{
-                console.log(res.data.data);
+                // console.log(res.data.data);
                 this.userList=res.data.data;
             })
           }

@@ -4,7 +4,7 @@
 		<el-row>
 			<el-col :span="4" class="gu">
 				<el-menu :default-active="defaultActive" style="height:100%;" unique-opened router>
-					<el-menu-item index="/"><i class="el-icon-menu"></i>首页</el-menu-item>
+					<el-menu-item index="/main"><i class="el-icon-menu"></i>首页</el-menu-item>
 					<el-submenu index="2">
 						<template slot="title"><i class="el-icon-document"></i>数据管理</template>
 						<el-menu-item index="userList" >用户列表</el-menu-item>

@@ -7,35 +7,35 @@
                     <template slot-scope="props">
                         <el-form class="table-expand" inline label-position="left">
                             <el-form-item label="店铺名称">
-                                <span>{{props.row.shop_name}}</span>
+                                <span>{{props.row.name}}</span>
                             </el-form-item>
                             <el-form-item label="店铺地址">
                                 <span>{{props.row.address}}</span>
                             </el-form-item>
                             <el-form-item label="店铺介绍">
-                                <span>{{props.row.desc}}</span>
+                                <span>{{props.row.description}}</span>
                             </el-form-item>
                             <el-form-item label="店铺ID">
-                                <span>{{props.row.shopId}}</span>
+                                <span>{{props.row.id}}</span>
                             </el-form-item>
                             <el-form-item label="联系电话">
                                 <span>{{props.row.phone}}</span>
                             </el-form-item>
                             <el-form-item label="评分">
-                                <span>{{props.row.score}}</span>
+                                <span>{{props.row.rating}}</span>
                             </el-form-item>
                             <el-form-item label="销售量">
-                                <span>{{props.row.sale_num}}</span>
+                                <span>{{props.row.recent_order_num}}</span>
                             </el-form-item>
                             <el-form-item label="分类">
-                                <span>{{props.row.kind}}</span>
+                                <span>{{props.row.category}}</span>
                             </el-form-item>
                         </el-form>
                     </template>
                 </el-table-column>
-                <el-table-column label="店铺名称" prop="shop_name"></el-table-column>
+                <el-table-column label="店铺名称" prop="name"></el-table-column>
                 <el-table-column label="店铺地址" prop="address"></el-table-column>
-                <el-table-column label="店铺介绍" prop="intro"></el-table-column>
+                <el-table-column label="店铺介绍" prop="description"></el-table-column>
                 <el-table-column label="操作">
                     <div slot-scope="scope">
                         <el-button size="mini">编辑</el-button>
@@ -50,7 +50,7 @@
                  @current-change="currentPage"
                  :total="100" 
                  layout="total,sizes,prev, pager, next"  
-                 :page-sizes="[10,20,30,40]"
+                 :page-sizes="[10,20,30,40,50]"
                 >
                 </el-pagination>
             </div>
@@ -64,63 +64,21 @@
         components:{
             Header
         },
+        mounted:function(){
+            this.loadData();
+        },
         data(){
              return {
-                shopList: [
-                    {
-                        shop_name: '好滋好味鸡蛋仔',
+                shopList: [{
+                        name: '好滋好味鸡蛋仔',
                         address: '上海市普陀区真北路',
                         category: '江浙小吃、小吃零食',
-                        desc: '荷兰优质淡奶，奶香浓而不腻',
-                        shopId: '10333',
-                        sale_num:'5645',
+                        description: '荷兰优质淡奶，奶香浓而不腻',
+                        id: '10333',
                         phone:'18745698751',
-                        score:'4.5',
-                        kind:'nicai'
-                    }, 
-                    {
-                        shop_name: '好滋好味鸡蛋仔',
-                        address: '上海市普陀区真北路',
-                        category: '江浙小吃、小吃零食',
-                        desc: '荷兰优质淡奶，奶香浓而不腻',
-                        shopId: '10333',
-                        sale_num:'5645',
-                        phone:'18745698751',
-                        score:'4.5',
-                        kind:'nicai'
-                    },
-                    {
-                        shop_name: '好滋好味鸡蛋仔',
-                        address: '上海市普陀区真北路',
-                        category: '江浙小吃、小吃零食',
-                        desc: '荷兰优质淡奶，奶香浓而不腻',
-                        shopId: '10333',
-                        sale_num:'5645',
-                        phone:'18745698751',
-                        score:'4.5',
-                        kind:'nicai'
-                    },
-                    {
-                        shop_name: '好滋好味鸡蛋仔',
-                        address: '上海市普陀区真北路',
-                        category: '江浙小吃、小吃零食',
-                        desc: '荷兰优质淡奶，奶香浓而不腻',
-                        shopId: '10333',
-                        phone:'18745698751',
-                        sale_num:'5645',
-                        score:'4.5',
-                        kind:'nicai'
-                    },
-                    {
-                        shop_name: '好滋好味鸡蛋仔',
-                        address: '上海市普陀区真北路',
-                        category: '江浙小吃、小吃零食',
-                        desc: '荷兰优质淡奶，奶香浓而不腻',
-                        shopId: '10333',
-                        phone:'18745698751',
-                        sale_num:'5645',
-                        score:'4.5',
-                        kind:'nicai'
+                        recent_order_num:'5645',
+                        rating:'4.5',
+                        category:'nicai'
                     }]
             }
         },
@@ -131,6 +89,12 @@
             },
             currentPage:function(val){
                  this.$message.success(`这是第${val}页`);
+            },
+            loadData:function(){
+                this.$http.get('https://elm.cangdu.org/shopping/restaurants?latitude=34.34127&longitude=108.939842').then(res=>{
+                    console.log(res.data);
+                    this.shopList=res.data;
+                })
             }
         }
     }
