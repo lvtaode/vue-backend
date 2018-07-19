@@ -38,13 +38,13 @@
                 <el-table-column label="店铺介绍" prop="description"></el-table-column>
                 <el-table-column label="操作">
                     <div slot-scope="scope">
-                        <el-button size="mini">编辑</el-button>
-                        <el-button size="mini" >添加食品</el-button>
-                        <el-button size="mini" type="danger">删除</el-button>
+                        <el-button size="mini" @click="handleEdit(scope.$index,scope.row)">编辑</el-button>
+                        <el-button size="mini" @click="addFood(scope.$index,scope.row)">添加食品</el-button>
+                        <el-button size="mini" type="danger" @click="deleteFood(scope.$index,scope.row)">删除</el-button>
                     </div>
                 </el-table-column>
             </el-table>
-             <div class="pagination">
+            <div class="pagination">
                 <el-pagination 
                  @size-change="handleSizeChange"
                  @current-change="currentPage"
@@ -54,6 +54,37 @@
                 >
                 </el-pagination>
             </div>
+           <el-dialog title="修改店铺信息" :visible.sync="dialogFormVisible">
+               <el-form label-width="100px" v-model="selectTable">
+                   <el-form-item label="店铺名称">
+                       <el-input v-model="selectTable.name"></el-input>
+                   </el-form-item>
+                   <el-form-item label="详细地址">
+                       <el-input v-model="selectTable.address"></el-input>
+                   </el-form-item>
+                   <el-form-item label="店铺介绍">
+                       <el-input v-model="selectTable.description"></el-input>
+                   </el-form-item>
+                   <el-form-item label="联系电话">
+                       <el-input v-model="selectTable.phone"></el-input>
+                   </el-form-item>
+                   <el-form-item label="店铺分类">
+                       <el-select></el-select>
+                   </el-form-item>
+                   <el-form-item label="商铺图片">
+                       <el-upload
+                            class="avatar_upload"
+                            action="url">
+                           <img v-if="url" src="../static/01.jpg" class="avatar">
+                           <i v-else class="el-icon-plus add"></i>
+                       </el-upload>
+                   </el-form-item>
+               </el-form>
+               <div slot="footer">
+                   <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary">确 定</el-button>
+               </div>
+		   </el-dialog>
         </div>
     </div>
 </template>
@@ -78,8 +109,12 @@
                         phone:'18745698751',
                         recent_order_num:'5645',
                         rating:'4.5',
-                        category:'nicai'
-                    }]
+                        category:'nicai',
+                        restaurant_id:'2'
+                    }],
+                selectTable:{},
+                url:true,
+                dialogFormVisible:false
             }
         },
         methods:{
@@ -95,6 +130,18 @@
                     console.log(res.data);
                     this.shopList=res.data;
                 })
+            },
+            handleEdit:function(index,row){
+                console.log(index,row);
+                this.selectTable=row;
+                this.dialogFormVisible=true;
+            },
+            addFood:function(index,row){
+                this.$router.push({path:'addGoods',query:{restaurant_id:row.id}});
+            },
+            deleteFood:function(index,row){
+                this.shopList.splice(index,1);
+                this.$message.success('删除成功');
             }
         }
     }
@@ -102,4 +149,26 @@
 
 <style>
     @import '../style/common.css';
+    .avatar_upload .el-upload{
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .add{
+        width: 120px;
+        height: 120px;
+        line-height: 120px;
+        border-radius: 5px;
+        font-size: 32px;
+    }
+    .avatar {
+        width: 120px;
+        height: 120px;
+        display: block;
+    }
+     .avatar_upload .el-upload:hover {
+        border-color: #20a0ff;
+    }
 </style>

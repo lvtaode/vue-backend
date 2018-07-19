@@ -33,9 +33,9 @@
         data(){
             return {
                 userList:[{
-                        register_time:'2012-02-23',
+                        registe_time:'2012-02-23',
                         username:'刘三姐',
-                        address:'陕西省西安市'
+                        city:'陕西省西安市'
                     }],
                     limit:10,
                     offset:0,
