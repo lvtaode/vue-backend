@@ -1,7 +1,7 @@
 # my_demo
 
 > A Vue.js project
-
+07-19 晚上在 Mac 上测试
 ## Build Setup
 
 ``` bash
