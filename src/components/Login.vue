@@ -5,7 +5,7 @@
         <section class="box" v-show="showLogin">
             <p class="slogan">elm后台管理系统</p>
             <div class="form_box">
-                <el-form v-model="loginForm" ref="loginForm">
+                <el-form :model="loginForm" ref="loginForm" :rules="rules">
                     <el-form-item prop="username">
                         <el-input v-model="loginForm.username" placeholder="用户名"></el-input>
                     </el-form-item>
@@ -15,7 +15,7 @@
                     <el-form-item>
                         <el-button
                          type="primary" 
-                         @click="login('loginForm')"
+                         @click="submit('loginForm')"
                          style="width:100%;font-size:20px;">登 录</el-button>
                     </el-form-item>
                 </el-form>
@@ -32,6 +32,7 @@
 </template>
 <script>
     import {mapState,mapActions} from 'vuex';
+    import { setTimeout } from 'timers';
     export default{
         data(){
             return{
@@ -39,7 +40,15 @@
                     username:'',
                     password:''
                 },
-                showLogin:false
+                showLogin:false,
+                rules:{
+					username: [
+			            { required: true, message: '请输入用户名', trigger: 'blur' },
+			        ],
+					password: [
+						{ required: true, message: '请输入密码', trigger: 'blur' }
+					],
+				}
             }
         },
         computed: {
@@ -49,9 +58,29 @@
             this.showLogin=true;
         },
         methods:{
-            login(){
-                console.log(this.loginForm.username);
+            submit(formName){
+                console.log(this.$refs[formName].validate);
+                this.$refs[formName].validate(valid=>{
+                    console.log(1,valid);
+                    if(valid){
+                        console.log(this.loginForm);
+                        this.$message.success("登陆成功");
+                         setTimeout(()=>{
+                            this.$router.push({path:'main'});
+                        },1500);
+                    }else{
+                        this.$notify.error({
+							title: '错误',
+							message: '请输入正确的用户名密码',
+							offset: 100
+						});
+						return false;
+                    }
+                })
+                
+               
             }
+                
         },
         watch: {
 			adminInfo: function (newValue){

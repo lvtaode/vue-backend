@@ -3,15 +3,15 @@
         <Header></Header>
         <el-row style="margin-top:50px;">
             <el-col :span="12" :offset="4">
-                <el-form :model="formData" ref="formData" label-width="110px">
-                    <el-form-item label="店铺名称">
-                        <el-input v-model="formData.shop_name"></el-input>
+                <el-form :model="formData"  label-width="110px" ref="formData" :rules="rules">
+                    <el-form-item label="店铺名称" prop="name">
+                        <el-input v-model="formData.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="详细地址">
-                        <el-input placeholder="请输入地址" v-model="formData.addr"></el-input>
+                    <el-form-item label="详细地址" prop="address">
+                        <el-input placeholder="请输入地址" v-model="formData.address"></el-input>
                     </el-form-item>    
-                    <el-form-item label="联系电话">
-                        <el-input v-model="formData.phoneNum"></el-input>
+                    <el-form-item label="联系电话" prop="phone">
+                        <el-input v-model.number="formData.phone" max-length="11"></el-input>
                     </el-form-item>     
                     <el-form-item label="店铺简介">
                         <el-input v-model.number="formData.shop_intro" maxlength="11"></el-input>
@@ -140,10 +140,22 @@
     export default {
         data(){
             return{
+                rules: {
+					name: [
+						{ required: true, message: '请输入店铺名称', trigger: 'blur' },
+					],
+					address: [
+						{ required: true, message: '请输入详细地址', trigger: 'blur' }
+					],
+					phone: [
+						{ required: true, message: '请输入联系电话' },
+						{ type: 'number', message: '电话号码必须是数字' }
+					],
+				},
                 formData:{
-                    shop_name:'',
-                    addr:'',
-                    phoneNum:'',
+                    name:'',
+                    address:'',
+                    phone:'',
                     shop_intro:'',
                     slogn:'',
                     is_premium:'',
@@ -159,7 +171,7 @@
                     avatar:'',
                     test:''
                 },
-                activityValue:'满减优惠',
+                activityValue:'请选择',
                 options: [{
 		          	value: '满减优惠',
 		          	label: '满减优惠'
@@ -208,39 +220,56 @@
                             value: '41',
                             label: '香蕉桔子' 
                             }]
-                    }
-                    ],
+                    }],
                     activities: [{
-		        	icon_name: '减',
-		        	name: '满减优惠',
-		        	description: '满30减5，满60减8',
-                    },
-                    {
-		        	icon_name: '减',
-		        	name: '满减优惠',
-		        	description: '满30减5，满60减8',
-                    },
-                    {
-		        	icon_name: '减',
-		        	name: '满减优惠',
-		        	description: '满30减5，满60减8',
-                    },
-                    {
-		        	icon_name: '减',
-		        	name: '满减优惠',
-		        	description: '满30减5，满60减8',
-			        }]
+                        icon_name: '减',
+                        name: '满减优惠',
+                        description: '满30减5，满60减8',
+                    }]
                 }
             },
         components:{
             Header
         },
         methods:{
-            submitForm:function(data){
-                this.$message({
-                    type:'success',
-                    message:'创建成功'
-                });
+            submitForm(formName){
+                this.$refs[formName].validate(valid=>{
+                    console.log(valid);
+                    if(valid){
+                        console.log(this.formData);
+                        this.$message({
+                            type:'success',
+                            message:'创建成功'
+                        });
+                        this.formData={
+                                    name:'',
+                                    address:'',
+                                    phone:'',
+                                    shop_intro:'',
+                                    slogn:'',
+                                    is_premium:'',
+                                    delivery_mode:'',
+                                    bao:'',
+                                    new_shop:'',
+                                    ontime:'',
+                                    ticket:'',
+                                    float_delivery_fee:5,
+                                    float_minimum_order_amount:20,
+                                    startTime:'',
+                                    endTime:'',
+                                    avatar:'',
+                                    test:''
+                                }
+                    }else{
+                        this.$notify.error({
+							title: '错误',
+							message: '请检查输入是否正确',
+							offset: 100
+						});
+						return false;
+                    }
+                })
+                
             },
             tableRowClassName({row, rowIndex}) {
 		        if (rowIndex=== 1) {
@@ -255,12 +284,56 @@
 		    	this.activities.splice(index, 1)
             },
             selectActivity(){
-                console.log("dianjile...");
                 this.$prompt("请输入活动详情","提示",{
                     confirmButtonText: '确定',
 		          	cancelButtonText: '取消'
-                }).then((value)=>{
+                }).then(({value})=>{
                     console.log(value);
+                    if(value==null){
+                        this.$message({
+                            type:'info',
+                            message:"请输入活动详情"
+                        });
+                        return;
+                    }
+                    let newObj = {};
+                    
+                    switch(this.activityValue){
+                        case '满减优惠':
+		          			newObj= {
+		          				icon_name: '减',
+					        	name: '满减优惠',
+					        	description: value,
+		          			}
+		          			break;
+		          		case '优惠大酬宾':
+		          			newObj= {
+		          				icon_name: '特',
+					        	name: '优惠大酬宾',
+					        	description: value,
+		          			}
+		          			break;
+		          		case '新用户立减':
+		          			newObj= {
+		          				icon_name: '新',
+					        	name: '新用户立减',
+					        	description: value,
+		          			}
+		          			break;
+		          		case '进店领券':
+		          			newObj= {
+		          				icon_name: '领',
+					        	name: '进店领券',
+					        	description: value,
+		          			}
+		          			break;
+                    }
+                    this.activities.push(newObj);
+                }).catch(()=>{
+                    this.$message({
+                        type:'info',
+                        message:'取消输入'
+                    });
                 })
             }
         }
