@@ -66,7 +66,7 @@
                         console.log(this.loginForm);
                         this.$message.success("登陆成功");
                          setTimeout(()=>{
-                            this.$router.push({path:'main'});
+                            this.$router.push('/main');
                         },1500);
                     }else{
                         this.$notify.error({
