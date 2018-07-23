@@ -2,7 +2,7 @@
     <div class="login_page">
        <transition name="form-fade" mode="in-out">
        
-        <section class="box" v-show="showLogin">
+        <section class="login_box" v-show="showLogin">
             <p class="slogan">elm后台管理系统</p>
             <div class="form_box">
                 <el-form :model="loginForm" ref="loginForm" :rules="rules">
@@ -103,7 +103,7 @@
         height:100vh;
         background-color: #324057;
     }
-    .box{
+    .login_box{
         text-align: center;
         width: 360px;
         height: 300px;

@@ -36,9 +36,9 @@
 </script>
 <style>
     .box{
-        width: 60%;
+        width: 600px;
         min-height:500px;
-        margin: 10px auto;
+        margin:10px auto;
         border-radius:10px;
         background-color: #f7f7f7;
     }

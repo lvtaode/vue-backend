@@ -48,7 +48,7 @@
                 <el-pagination 
                  @size-change="handleSizeChange"
                  @current-change="currentPage"
-                 :total="100" 
+                 :total="count" 
                  layout="total,sizes,prev, pager, next"  
                  :page-sizes="[10,20,30,40,50]"
                 >
@@ -69,13 +69,15 @@
                        <el-input v-model="selectTable.phone"></el-input>
                    </el-form-item>
                    <el-form-item label="店铺分类">
-                       <el-select></el-select>
+                       <el-select>
+
+                       </el-select>
                    </el-form-item>
                    <el-form-item label="商铺图片">
                        <el-upload
                             class="avatar_upload"
                             action="url">
-                           <img v-if="url" src="../static/01.jpg" class="avatar">
+                           <img v-if="url" src="https://elm.cangdu.org/img/164bca5796011.jpeg" class="avatar">
                            <i v-else class="el-icon-plus add"></i>
                        </el-upload>
                    </el-form-item>
@@ -114,7 +116,8 @@
                     }],
                 selectTable:{},
                 url:true,
-                dialogFormVisible:false
+                dialogFormVisible:false,
+                count:0
             }
         },
         methods:{
@@ -129,10 +132,12 @@
                 this.$http.get('https://elm.cangdu.org/shopping/restaurants?latitude=34.34127&longitude=108.939842').then(res=>{
                     console.log(res.data);
                     this.shopList=res.data;
+                });
+                this.$http.get('https://elm.cangdu.org/shopping/restaurants/count').then(res=>{
+                    this.count=res.data.count;
                 })
             },
             handleEdit:function(index,row){
-                console.log(index,row);
                 this.selectTable=row;
                 this.dialogFormVisible=true;
             },

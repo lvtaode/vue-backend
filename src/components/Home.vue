@@ -5,15 +5,15 @@
         <section class="data_section">
             <el-row :gutter="20" style="margin-bottom:10px;margin-left:30px">
                 <el-col :span="5"><div class="data_list today_head">当日数据</div></el-col>
-				<el-col :span="5"><div class="data_list"><span>32</span> 新增用户</div></el-col>
-				<el-col :span="5"><div class="data_list"><span>17</span> 新增订单</div></el-col>
-                <el-col :span="5"><div class="data_list"><span>55</span> 新增管理员</div></el-col>
+				<el-col :span="5"><div class="data_list"><span>{{userCount}}</span> 新增用户</div></el-col>
+				<el-col :span="5"><div class="data_list"><span>{{orderCount}}</span> 新增订单</div></el-col>
+                <el-col :span="5"><div class="data_list"><span>{{adminCount}}</span> 新增管理员</div></el-col>
 			</el-row>
             <el-row :gutter="20" style="margin-bottom:10px;margin-left:30px">
                 <el-col :span="5"><div class="data_list all_head">总数据</div></el-col>
-                <el-col :span="5"><div class="data_list"><span>11673</span> 注册用户</div></el-col>
-                <el-col :span="5"><div class="data_list"><span>4747</span> 订单</div></el-col>
-                <el-col :span="5"><div class="data_list"><span>17172</span> 管理员</div></el-col>
+                <el-col :span="5"><div class="data_list"><span>{{allUserCount}}</span> 注册用户</div></el-col>
+                <el-col :span="5"><div class="data_list"><span>{{allOrderCount}}</span> 订单</div></el-col>
+                <el-col :span="5"><div class="data_list"><span>{{allAdminCount}}</span> 管理员</div></el-col>
             </el-row>
         </section>
         <div id="chart">
@@ -32,17 +32,39 @@
     import 'echarts/lib/component/toolbox';
     import 'echarts/lib/component/markPoint';
     import 'echarts/lib/component/tooltip';
+    import dtime from 'time-formater'
+import { setTimeout } from 'timers';
     export default{
         mounted(){
-             this.drawLine();
+            for (let i = 6; i > -1; i--) {
+                const date = dtime(new Date().getTime() - 86400000*i).format('YYYY-MM-DD');
+                this.sevenDay.push(date);
+            }
+             this.loadData();
+            //  this.adminNumber(this.sevenDay);
+             this.userNumber(this.sevenDay);
+            //  this.orderNumber(this.sevenDay);
+             
+             var that=this;
+             setTimeout(function(){
+                 that.drawLine();
+             },500);
         },
         data(){
             return{
-
+                userCount:null,
+                allUserCount:null,
+                orderCount:null,
+                allOrderCount:null,
+                adminCount:null,
+                allAdminCount:null,
+                sevenDay:[],
+                sevenData:[[],[],[]]
             }
         },
         methods: {
                 drawLine() {
+                  
                 // 基于准备好的dom，初始化echarts实例
                 let myChart = echarts.init(document.getElementById('chart'));
                 // 绘制图表
@@ -71,7 +93,7 @@
                     xAxis:  {
                         type: 'category',
                         boundaryGap: false,
-                        data: ["2018-07-08","2018-07-09","2018-07-10","2018-07-11","2018-07-12","2018-07-13","2018-07-14"]
+                        data: this.sevenDay
                     },
                     yAxis: [
                         {
@@ -110,7 +132,7 @@
                             color:'#5793f3',
                             name:'新注册用户',
                             type:'line',
-                            data:[152,23,56,78,65,105,59],
+                            data:this.sevenData[0],
                             yAxisIndex: 1,
                             markPoint: {
                                 data: [
@@ -123,7 +145,7 @@
                             color:'#675bba',
                             name:'新增订单',
                             type:'line',
-                            data:[15,3,62,81,38,45,77],
+                            data:this.sevenData[1],
                             yAxisIndex: 1,
                             markPoint: {
                                 data: [
@@ -136,7 +158,7 @@
                             color:'#d14a61',
                             name:'新增管理员',
                             type:'line',
-                            data:[96,35,89,78,52,15,148],
+                            data:this.sevenData[2],
                             yAxisIndex: 1,
                             markPoint: {
                                 data: [
@@ -146,11 +168,77 @@
                             },
                         }]
                     });
-                }
+                },
+                userNumber(date){  
+                    // for(let i=0;i<7;i++){     
+                    //     this.$http.get('https://elm.cangdu.org/statis/user/'+date[i]+'/count').then(res=>{
+                    //         console.log(i);
+                    //     this.sevenData[0].push(res.data.count);
+                         
+                    // }); 
+                    // }
+                    // this.sevenDay.forEach(element => {
+                        
+                    //      this.$http.get('https://elm.cangdu.org/statis/user/'+element+'/count').then(res=>{
+                    //          console.log(element);
+                    //          var i=1;
+                    //          var that=this;
+                    //         setTimeout(function(){
+                    //             that.sevenData[0].push(res.data.count);
+                    //         },500*i); 
+                    //         i++;
+                    //     })
+                    // });
+                },
+                orderNumber(date){  
+                    for(var i=0;i<7;i++){     
+                        this.$http.get('https://elm.cangdu.org/statis/order/'+date[i]+'/count').then(res=>{
+                        this.sevenData[1].push(res.data.count);
+                         
+                    }); 
+                    }
+                },
+                adminNumber(date){  
+                    // for(var i=0;i<7;i++){     
+                    //     this.$http.get('https://elm.cangdu.org/statis/admin/'+date[i]+'/count').then(res=>{
+                    //     // console.log(res.data.count);
+                    //     this.sevenData[2].push(res.data.count);
+                    // }); 
+                    // }
+                },
+                loadData(){
+                        const today = dtime(new Date().getTime()).format('YYYY-MM-DD');
+                        
+                        this.$http.get('https://elm.cangdu.org/statis/user/'+today+'/count').then(res=>{
+                            this.userCount=res.data.count;
+                        });
+                        this.$http.get('https://elm.cangdu.org/statis/admin/'+today+'/count').then(res=>{
+                            this.adminCount=res.data.count;
+                        });
+                        this.$http.get('https://elm.cangdu.org/statis/order/'+today+'/count').then(res=>{
+                            this.orderCount=res.data.count;
+                        });
+                        this.$http.get('https://elm.cangdu.org/v1/users/count').then(res=>{
+                            this.allUserCount=res.data.count;
+                        });
+                        this.$http.get('https://elm.cangdu.org/bos/orders/count').then(res=>{
+                            this.allOrderCount=res.data.count;
+                        });
+                        this.$http.get('https://elm.cangdu.org/admin/count').then(res=>{
+                            this.allAdminCount=res.data.count;
+                        });
+
+                },
             },
         components: {
     		topHead
-    	}
+        },
+        watch:{
+            // sevenDay: function (){
+            //     this.drawLine();
+            //     console.log(1);
+            // }
+        }
     }
 </script>
 <style>
