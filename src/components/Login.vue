@@ -59,15 +59,27 @@
         },
         methods:{
             submit(formName){
-                console.log(this.$refs[formName].validate);
+                // console.log(this.$refs[formName].validate);
                 this.$refs[formName].validate(valid=>{
-                    console.log(1,valid);
                     if(valid){
-                        console.log(this.loginForm);
-                        this.$message.success("登陆成功");
-                         setTimeout(()=>{
-                            this.$router.push('/main');
-                        },1500);
+                        console.log(this.loginForm.username);
+                        var that=this;
+                        this.$http.post('https://elm.cangdu.org/admin/login',{
+                            user_name:this.loginForm.username,
+                            password:this.loginForm.password
+                        }).then(res=>{
+                            console.log(res.data);
+                            if(res.data.status==1){
+                                this.$message.success(res.data.success);
+                                this.$router.push('main');
+                            }else{
+                                 this.$message.error(res.data.message);
+                            }
+                        })
+                        
+                        //  setTimeout(()=>{
+                        //     this.$router.push('/main');
+                        // },1500);
                     }else{
                         this.$notify.error({
 							title: '错误',
@@ -84,7 +96,6 @@
         },
         watch: {
 			adminInfo: function (newValue){
-                console.log(123)
                 console.log(newValue);
 				if (newValue.id) {
 					this.$message({

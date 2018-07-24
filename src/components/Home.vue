@@ -33,22 +33,19 @@
     import 'echarts/lib/component/markPoint';
     import 'echarts/lib/component/tooltip';
     import dtime from 'time-formater'
-import { setTimeout } from 'timers';
+    import { setTimeout } from 'timers';
     export default{
         mounted(){
-            for (let i = 6; i > -1; i--) {
+            
+             for (let i = 6; i > -1; i--) {
                 const date = dtime(new Date().getTime() - 86400000*i).format('YYYY-MM-DD');
                 this.sevenDay.push(date);
             }
-             this.loadData();
-            //  this.adminNumber(this.sevenDay);
-             this.userNumber(this.sevenDay);
-            //  this.orderNumber(this.sevenDay);
-             
+            this.loadData();
+            this.getSevenData();
+            
              var that=this;
-             setTimeout(function(){
-                 that.drawLine();
-             },500);
+             setTimeout(function(){that.drawLine()},1500);
         },
         data(){
             return{
@@ -63,8 +60,36 @@ import { setTimeout } from 'timers';
             }
         },
         methods: {
+            async getSevenData(){
+    			const apiArr = [[],[],[]];
+    			this.sevenDay.forEach(item => {
+                    
+    				apiArr[0].push( this.$http.get('https://elm.cangdu.org/statis/user/'+item+'/count').then(res=>{
+                        return res.data.count;
+                    }))
+                    apiArr[1].push( this.$http.get('https://elm.cangdu.org/statis/order/'+item+'/count').then(res=>{
+                        return res.data.count;
+                    }))
+                    apiArr[2].push( this.$http.get('https://elm.cangdu.org/statis/admin/'+item+'/count').then(res=>{
+                        return res.data.count;
+                    }))
+    			})
+                const promiseArr = [...apiArr[0], ...apiArr[1], ...apiArr[2]];
+                console.log(promiseArr);
+    			Promise.all(promiseArr).then(res => {
+                    // console.log(res);
+    				const resArr = [[],[],[]];
+					res.forEach((item, index) => {
+						resArr[Math.floor(index/7)].push(item)	
+                    })
+                    this.sevenData = resArr;
+                    // console.log(this.sevenData);
+    			}).catch(err => {
+    				console.log(err)
+    			})
+    		},
                 drawLine() {
-                  
+                    console.log(this.sevenData);
                 // 基于准备好的dom，初始化echarts实例
                 let myChart = echarts.init(document.getElementById('chart'));
                 // 绘制图表
@@ -169,44 +194,7 @@ import { setTimeout } from 'timers';
                         }]
                     });
                 },
-                userNumber(date){  
-                    // for(let i=0;i<7;i++){     
-                    //     this.$http.get('https://elm.cangdu.org/statis/user/'+date[i]+'/count').then(res=>{
-                    //         console.log(i);
-                    //     this.sevenData[0].push(res.data.count);
-                         
-                    // }); 
-                    // }
-                    // this.sevenDay.forEach(element => {
-                        
-                    //      this.$http.get('https://elm.cangdu.org/statis/user/'+element+'/count').then(res=>{
-                    //          console.log(element);
-                    //          var i=1;
-                    //          var that=this;
-                    //         setTimeout(function(){
-                    //             that.sevenData[0].push(res.data.count);
-                    //         },500*i); 
-                    //         i++;
-                    //     })
-                    // });
-                },
-                orderNumber(date){  
-                    for(var i=0;i<7;i++){     
-                        this.$http.get('https://elm.cangdu.org/statis/order/'+date[i]+'/count').then(res=>{
-                        this.sevenData[1].push(res.data.count);
-                         
-                    }); 
-                    }
-                },
-                adminNumber(date){  
-                    // for(var i=0;i<7;i++){     
-                    //     this.$http.get('https://elm.cangdu.org/statis/admin/'+date[i]+'/count').then(res=>{
-                    //     // console.log(res.data.count);
-                    //     this.sevenData[2].push(res.data.count);
-                    // }); 
-                    // }
-                },
-                loadData(){
+                 async loadData(){
                         const today = dtime(new Date().getTime()).format('YYYY-MM-DD');
                         
                         this.$http.get('https://elm.cangdu.org/statis/user/'+today+'/count').then(res=>{
@@ -234,6 +222,9 @@ import { setTimeout } from 'timers';
     		topHead
         },
         watch:{
+           dsf: function(){
+                this.loadData();
+            }
             // sevenDay: function (){
             //     this.drawLine();
             //     console.log(1);

@@ -20,7 +20,9 @@
 				if(command=="home"){
 					this.$router.push('/main')
 				}else if(command=="singout"){
+					
 					this.$router.push('/');
+					this.$message.success('退出成功');
 				}
 			}
 		}

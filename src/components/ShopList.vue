@@ -61,7 +61,9 @@
                    </el-form-item>
                    <el-form-item label="详细地址">
                        <el-input v-model="selectTable.address"></el-input>
+                       <span>当前城市 : {{city.name}}</span>
                    </el-form-item>
+                   
                    <el-form-item label="店铺介绍">
                        <el-input v-model="selectTable.description"></el-input>
                    </el-form-item>
@@ -98,7 +100,12 @@
             Header
         },
         mounted:function(){
-            this.loadData();
+            this.$http.get('http://cangdu.org:8001/v1/cities?type=guess').then(res=>{
+                this.city=res.data;
+            })
+            setTimeout(() => {
+                this.loadData();
+            }, 500); 
         },
         data(){
              return {
@@ -117,20 +124,33 @@
                 selectTable:{},
                 url:true,
                 dialogFormVisible:false,
-                count:0
+                count:0,
+                limit:10,
+                offset:0,
+                city:null,
             }
         },
         methods:{
             // 每页多少条数据
             handleSizeChange:function(val){
                 this.$message.success(`每页显示${val}条数据`);
+                this.limit=val;
+                this.loadData();
             },
             currentPage:function(val){
                  this.$message.success(`这是第${val}页`);
+                 this.offset=(val-1)*this.limit;
+                 console.log(this.offset);
+                 this.loadData();
             },
             loadData:function(){
-                this.$http.get('https://elm.cangdu.org/shopping/restaurants?latitude=34.34127&longitude=108.939842').then(res=>{
-                    console.log(res.data);
+                this.$http.get('https://elm.cangdu.org/shopping/restaurants',{params:{
+                    latitude:this.city.latitude,
+                    longitude:this.city.longitude,
+                    limit:this.limit,
+                    offset:this.offset
+                }}).then(res=>{
+                   
                     this.shopList=res.data;
                 });
                 this.$http.get('https://elm.cangdu.org/shopping/restaurants/count').then(res=>{
