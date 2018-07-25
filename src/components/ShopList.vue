@@ -71,22 +71,27 @@
                        <el-input v-model="selectTable.phone"></el-input>
                    </el-form-item>
                    <el-form-item label="店铺分类">
-                       <el-select>
-
-                       </el-select>
+                       <el-cascader
+                          :options="categoryOptions"
+                          v-model="selectedCategory"
+                          change-on-select
+                        ></el-cascader>
                    </el-form-item>
                    <el-form-item label="商铺图片">
                        <el-upload
                             class="avatar_upload"
-                            action="url">
-                           <img v-if="url" src="https://elm.cangdu.org/img/164bca5796011.jpeg" class="avatar">
+                            :action="baseUrl+'/v1/addimg/shop'"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                           <img v-if="selectTable.image_path" :src="baseImgPath+selectTable.image_path" class="avatar">
                            <i v-else class="el-icon-plus add"></i>
                        </el-upload>
                    </el-form-item>
                </el-form>
                <div slot="footer">
                    <el-button @click="dialogFormVisible = false">取 消</el-button>
-                    <el-button type="primary">确 定</el-button>
+                    <el-button type="primary" @click="updateShop">确 定</el-button>
                </div>
 		   </el-dialog>
         </div>
@@ -118,19 +123,40 @@
                         phone:'18745698751',
                         recent_order_num:'5645',
                         rating:'4.5',
-                        category:'nicai',
                         restaurant_id:'2'
                     }],
                 selectTable:{},
-                url:true,
                 dialogFormVisible:false,
                 count:0,
                 limit:10,
                 offset:0,
-                city:null,
+                city:{name:''},
+                categoryOptions: [],
+                selectedCategory: [],
+                baseUrl:'//elm.cangdu.org',
+                baseImgPath:'//elm.cangdu.org/img/'
             }
         },
         methods:{
+            beforeAvatarUpload:function(file){
+                console.log(file);
+                const fileType=(file.type==='image/jpeg') || (file.type==='image/png');
+                const fileSize=file.size/1024/1024<2;
+                if(!fileType){
+                    this.$message.error("上传图片格式只能是jpg或者png格式");
+                };
+                if(!fileSize){
+                    this.$message.error('上传图片大小不能超过2M');
+                }
+            },
+            handleAvatarSuccess:function(res){
+                if(res.status==1){
+                    this.selectTable.image_path = res.image_path;
+                    this.$message.success("上传图片成功");
+                }else{
+                    this.$message.error("上传图片失败");
+                }
+            },
             // 每页多少条数据
             handleSizeChange:function(val){
                 this.$message.success(`每页显示${val}条数据`);
@@ -150,7 +176,6 @@
                     limit:this.limit,
                     offset:this.offset
                 }}).then(res=>{
-                   
                     this.shopList=res.data;
                 });
                 this.$http.get('https://elm.cangdu.org/shopping/restaurants/count').then(res=>{
@@ -158,7 +183,35 @@
                 })
             },
             handleEdit:function(index,row){
+                this.selectedCategory = row.category.split('/');
+                this.$http.get('https://elm.cangdu.org/shopping/v2/restaurant/category').then(res=>{
+                    // console.log(res.data);
+                    var data=res.data;
+                    data.forEach(item=>{
+                       
+                        if(item.sub_categories.length){
+                            
+                            const menu={
+                                value:item.name,
+                                label:item.name,
+                                children:[]
+                            };
+                            item.sub_categories.forEach((subitem,index)=>{
+                            
+                                if(index==0){
+                                    return;
+                                }
+                                menu.children.push({
+                                    value:subitem.name,
+                                    label:subitem.name
+                                })
+                            })
+                            this.categoryOptions.push(menu);
+                        }
+                    })
+                })
                 this.selectTable=row;
+                console.log(row);
                 this.dialogFormVisible=true;
             },
             addFood:function(index,row){
@@ -167,7 +220,20 @@
             deleteFood:function(index,row){
                 this.shopList.splice(index,1);
                 this.$message.success('删除成功');
-            }
+            },
+            updateShop:function() {
+                console.log(this.selectedCategory);
+                let tar=this.selectTable;
+                let data={id:'',name:'',address:'',description:'',phone:'',image_path:'',category:''};
+                data.id=tar.id;
+                data.name=tar.name;
+                data.address=tar.address;
+                data.description=tar.description;
+                data.phone=tar.phone;
+                data.image_path=tar.image_path;
+                data.category=this.selectedCategory.join('/');
+                console.log(data);
+            },
         }
     }
 </script>
