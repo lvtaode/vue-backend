@@ -116,7 +116,12 @@ import { setTimeout } from 'timers';
                     }
                 );
             },
-           expand:function(row){
+           expand:function(row,status){
+            //    console.log(status[0]);
+               if(status[0]==undefined){
+                   return;
+               }
+            //    console.log(0);
                 var restaurant_id=row.restaurant_id;
                 var user_id=row.user_id;
                 var address_id=row.address_id;

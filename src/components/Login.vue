@@ -68,7 +68,7 @@
                             user_name:this.loginForm.username,
                             password:this.loginForm.password
                         }).then(res=>{
-                            console.log(res.data);
+                            console.log(res);
                             if(res.data.status==1){
                                 this.$message.success(res.data.success);
                                 this.$router.push('main');

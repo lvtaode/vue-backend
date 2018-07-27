@@ -4,16 +4,16 @@
         <header class="title">管理员信息</header>
         <div class="box">
             <ul>
-                <li><span>姓&nbsp;&nbsp;&nbsp;&nbsp;名:</span><span>测试一下</span></li>
-                <li><span>管理员ID:</span><span>12350</span></li>
+                <li><span>姓&nbsp;&nbsp;&nbsp;&nbsp;名:</span><span>{{userData.username}}</span></li>
+                <li><span>管理员ID:</span><span>{{userData.id}}</span></li>
                 <li><span>管理员权限:</span><span>普通管理员</span></li>
-                <li><span> 注册时间:</span><span>2018-07-03 17:29</span></li>
+                <li><span> 注册时间:</span><span>{{userData.registe_time}}</span></li>
                 <li>
                     <span>更换头像:</span>
                     <el-upload
                       class="uploadImg"
                       :action="url">
-                      <img v-if="true" class="avatar" src="../assets/timg.jpg">
+                      <img v-if="true" class="avatar" :src="'//elm.cangdu.org/img/'+userData.avatar">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>    
                 </li>
@@ -26,11 +26,23 @@
     export default {
         data(){
             return{
-                url:''
+                url:'',
+                userData:[]
             }
+        },
+        mounted(){
+            this.loadData();
         },
         components:{
             topHead
+        },
+        methods:{
+            loadData(){
+                this.$http.get('https://elm.cangdu.org/v1/user/5').then(res=>{
+                    console.log(res.data);
+                    this.userData=res.data;
+                })
+            }
         }
     }
 </script>

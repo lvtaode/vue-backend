@@ -2,7 +2,7 @@
     <div>
         <Header></Header>
         <div class="container">
-            <el-table :data="foodList">
+            <el-table :data="foodList" @expand-change='expand'>
                 <el-table-column type="expand">
                     <template slot-scope="props">
                         <el-form class="table-expand" inline label-position="left">
@@ -140,7 +140,8 @@
                 count:0,
                 offset:0,
                 limit:10,
-                url:"12"
+                url:"12",
+                expendRow:[]
             }
         },
         methods:{
@@ -171,6 +172,15 @@
                 console.log(row);
                 this.showDialog=true;
                 this.selectTable=row;
+            },
+            expand:function(row, expandedRows){
+                // console.log(row);
+                console.log(expandedRows);
+            },
+            getSelectItem(row,type){
+                this.$http('https://elm.cangdu.org/shopping/restaurant/'+row.restaurant_id).then(res=>{
+
+                })
             }
         }       
     }

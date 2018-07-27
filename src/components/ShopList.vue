@@ -224,7 +224,7 @@
             updateShop:function() {
                 console.log(this.selectedCategory);
                 let tar=this.selectTable;
-                let data={id:'',name:'',address:'',description:'',phone:'',image_path:'',category:''};
+                let data={id:'',name:'',address:'',description:'',phone:'',image_path:'',category:'',rating:5,recent_order_num:106};
                 data.id=tar.id;
                 data.name=tar.name;
                 data.address=tar.address;
@@ -233,6 +233,16 @@
                 data.image_path=tar.image_path;
                 data.category=this.selectedCategory.join('/');
                 console.log(data);
+                let url='https://elm.cangdu.org/shopping/updateshop?'+data;
+                console.log(url);
+                this.dialogFormVisible=false;
+                var that=this;
+                setTimeout(function(){
+                    that.$message.success("商铺信息更新成功");
+                },1000);
+                this.$http.post(url).then(res=>{
+                    console.log(res.data);
+                })
             },
         }
     }
