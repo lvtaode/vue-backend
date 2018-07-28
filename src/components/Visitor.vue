@@ -1,7 +1,10 @@
 <template>
     <div>
         <Header></Header>
-        <div id="visitor">
+        <div id="visitor"
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading">
             <!-- <visitor-pie :pieData="pieData"></visitor-pie> -->
         </div>
     </div>
@@ -16,7 +19,8 @@
      export default {
          data(){
              return{
-                pieData:{}
+                pieData:{},
+                loading:true
              }
          },
          components:{
@@ -24,8 +28,8 @@
         },
         mounted(){
             this.$http.get('https://elm.cangdu.org/v1/user/city/count').then(res=>{
-                    
                     this.pieData = res.data.user_city;
+                    this.loading=false;
                 })
             this.myChart = echarts.init(document.getElementById('visitor'));
             this.initData();
@@ -70,8 +74,7 @@
                             }
                         }
                     ]
-                };
-                
+                };        
                 this.myChart.setOption(option);
             }
         },

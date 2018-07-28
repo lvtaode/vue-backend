@@ -1,5 +1,7 @@
 <template>
-    <div>
+    <div  v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
         <top-head></top-head>
         <header class="title">数据统计</header>
         <section class="data_section">
@@ -45,10 +47,14 @@
             this.getSevenData();
             
              var that=this;
-             setTimeout(function(){that.drawLine()},1500);
+             setTimeout(function(){
+                 that.loading=false;
+                 that.drawLine();
+                },1500);
         },
         data(){
             return{
+                loading:true,
                 userCount:null,
                 allUserCount:null,
                 orderCount:null,

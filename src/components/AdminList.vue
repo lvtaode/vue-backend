@@ -1,7 +1,9 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container" height="100%;">
+        <div class="container" height="100%;"  v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
             <el-table :data="userList" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
                 <el-table-column label="姓名" prop="user_name" width="220">
@@ -52,7 +54,8 @@
                 ],
                 offset:1,
                 limit:10,
-                count:0
+                count:0,
+                loading:true
             }
         },
         methods:{
@@ -71,6 +74,7 @@
                 this.$http.get('https://elm.cangdu.org/admin/all',{params:{limit:this.limit,offset:this.offset}}).then(res=>{
                 // console.log(res.data.data);
                 this.userList=res.data.data;
+                this.loading=false;
             })
           }
         }

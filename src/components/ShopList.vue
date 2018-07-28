@@ -1,7 +1,9 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container">
+        <div class="container"  v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
             <el-table :data="shopList">
                 <el-table-column type="expand">
                     <template slot-scope="props">
@@ -114,17 +116,19 @@
         },
         data(){
              return {
-                shopList: [{
-                        name: '好滋好味鸡蛋仔',
-                        address: '上海市普陀区真北路',
-                        category: '江浙小吃、小吃零食',
-                        description: '荷兰优质淡奶，奶香浓而不腻',
-                        id: '10333',
-                        phone:'18745698751',
-                        recent_order_num:'5645',
-                        rating:'4.5',
-                        restaurant_id:'2'
-                    }],
+                // shopList: [{
+                //         name: '好滋好味鸡蛋仔',
+                //         address: '上海市普陀区真北路',
+                //         category: '江浙小吃、小吃零食',
+                //         description: '荷兰优质淡奶，奶香浓而不腻',
+                //         id: '10333',
+                //         phone:'18745698751',
+                //         recent_order_num:'5645',
+                //         rating:'4.5',
+                //         restaurant_id:'2'
+                
+                //     }],
+                shopList:[],
                 selectTable:{},
                 dialogFormVisible:false,
                 count:0,
@@ -134,7 +138,8 @@
                 categoryOptions: [],
                 selectedCategory: [],
                 baseUrl:'//elm.cangdu.org',
-                baseImgPath:'//elm.cangdu.org/img/'
+                baseImgPath:'//elm.cangdu.org/img/',
+                loading:true
             }
         },
         methods:{
@@ -177,6 +182,7 @@
                     offset:this.offset
                 }}).then(res=>{
                     this.shopList=res.data;
+                    this.loading=false;
                 });
                 this.$http.get('https://elm.cangdu.org/shopping/restaurants/count').then(res=>{
                     this.count=res.data.count;

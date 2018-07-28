@@ -1,7 +1,9 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container">
+        <div class="container"  v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
             <el-table :data="foodList" @expand-change='expand'>
                 <el-table-column type="expand">
                     <template slot-scope="props">
@@ -122,17 +124,17 @@
         data(){
             return{
                 foodList:[
-                    {
-                        name:'黄焖鸡',
-                        description:'大吉大利,今晚吃鸡',
-                        rating:'4.8',
-                        food_id:'12',
-                        sale_count:'456',
-                        restaurant_name:'天下第一鸡',
-                        restaurant_id:'001',
-                        restaurant_address:'热河路303',
-                        category_name:'熟肉'
-                    }
+                    // {
+                    //     name:'黄焖鸡',
+                    //     description:'大吉大利,今晚吃鸡',
+                    //     rating:'4.8',
+                    //     food_id:'12',
+                    //     sale_count:'456',
+                    //     restaurant_name:'天下第一鸡',
+                    //     restaurant_id:'001',
+                    //     restaurant_address:'热河路303',
+                    //     category_name:'熟肉'
+                    // }
                 ],
                 selectTable:{},
                 specsFormShow:false,
@@ -141,7 +143,8 @@
                 offset:0,
                 limit:10,
                 url:"12",
-                expendRow:[]
+                expendRow:[],
+                loading:true
             }
         },
         methods:{
@@ -159,8 +162,9 @@
             },
             loadData:function(){
                 this.$http.get('https://elm.cangdu.org/shopping/v2/foods',{params:{limit:this.limit,offset:this.offset}}).then(res=>{
-                        console.log(res.data);
+                        // console.log(res.data);
                         this.foodList=res.data;
+                        this.loading=false;
                     }
                 )
             },

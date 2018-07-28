@@ -1,7 +1,9 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container">
+        <div class="container"  v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
             <el-table :data="orderList"  
                 @expand-change="expand"
                 >
@@ -62,7 +64,8 @@ import { setTimeout } from 'timers';
                 count:0,
                 limit:10,
                 offset:0,
-                expendRow: []
+                expendRow: [],
+                loading:true
             }
         },
         created(){
@@ -96,7 +99,7 @@ import { setTimeout } from 'timers';
                         restaurant_id:this.restaurant_id
                     }
                 }).then(res=>{
-                        console.log(res.data);
+                        // console.log(res.data);
                          this.orderList=[];
                         res.data.forEach((item,index) => {
                             const tableData = {};
@@ -113,6 +116,7 @@ import { setTimeout } from 'timers';
                             tableData.shop_name='';
                             this.orderList.push(tableData);
                         });
+                        this.loading=false;
                     }
                 );
             },

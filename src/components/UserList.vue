@@ -1,7 +1,10 @@
 <template>
     <div>
         <Header></Header>
-        <div class="container">
+        <div class="container" 
+            v-loading="loading"
+            element-loading-text="拼命加载中"
+            element-loading-spinner="el-icon-loading">
             <el-table  :data="userList" highlight-current-row>
                 <el-table-column fixed type="index" width="100"></el-table-column>
                 <el-table-column label="注册日期" prop="registe_time" width="220">
@@ -39,7 +42,8 @@
                     }],
                     limit:10,
                     offset:0,
-                    count:0
+                    count:0,
+                    loading:true
             }
         },
         mounted:function(){
@@ -68,6 +72,7 @@
                     }
                 }).then(res=>{
                     this.userList=res.data;
+                    this.loading=false;
                 })
             }
         }

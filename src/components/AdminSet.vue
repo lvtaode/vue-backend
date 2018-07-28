@@ -12,8 +12,11 @@
                     <span>更换头像:</span>
                     <el-upload
                       class="uploadImg"
-                      :action="url">
-                      <img v-if="true" class="avatar" :src="'//elm.cangdu.org/img/'+userData.avatar">
+                       :action="baseUrl + '/admin/update/avatar/' + userData.id"
+                       :before-upload="beforeImgUpload"
+                       :show-file-list="false"
+                       :on-success="uploadImg">
+                      <img v-if="userData.avatar" class="avatar" :src="'//elm.cangdu.org/img/'+userData.avatar">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>    
                 </li>
@@ -27,7 +30,9 @@
         data(){
             return{
                 url:'',
-                userData:[]
+                userData:[],
+                baseUrl:'//elm.cangdu.org',
+                baseImgPath:'//elm.cangdu.org/img/'
             }
         },
         mounted(){
@@ -42,6 +47,27 @@
                     console.log(res.data);
                     this.userData=res.data;
                 })
+            },
+            beforeImgUpload(file){
+                console.log(file);
+                const fileType=(file.type==="image/png") || (file.type==="image/jpeg");
+                const fileSize=(file.size/1024/1024)<2;
+                if(!fileType){
+                    this.$message.error("上传图片必须是png或者jpg格式");
+                }
+                if(!fileSize){
+                    this.$message.error("上传图片大小不能超过2M");
+                    
+                }
+            },
+            uploadImg({status,image_path},file){
+                console.log(image_path);
+                console.log(file);
+                if(status==1){
+                    this.userData.avatar=image_path;
+                }else{
+                    this.$message.error("上传图片失败");
+                }
             }
         }
     }
