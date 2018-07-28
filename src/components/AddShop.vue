@@ -8,7 +8,12 @@
                         <el-input v-model="formData.name"></el-input>
                     </el-form-item>
                     <el-form-item label="详细地址" prop="address">
-                        <el-input placeholder="请输入地址" v-model="formData.address"></el-input>
+                        <el-autocomplete style="width: 100%;"
+                            placeholder="请输入地址" 
+                            v-model="formData.address"
+                            :fetch-suggestions="suggestAddress">
+                        </el-autocomplete>
+                        <span>当前城市:{{city.name}}</span>
                     </el-form-item>    
                     <el-form-item label="联系电话" prop="phone">
                         <el-input v-model.number="formData.phone" max-length="11"></el-input>
@@ -138,6 +143,11 @@
 <script>
     import Header from './Header'
     export default {
+        created(){
+            this.$http.get('http://cangdu.org:8001/v1/cities?type=guess').then(res=>{
+                this.city=res.data;
+            })
+        },
         data(){
             return{
                 rules: {
@@ -151,7 +161,9 @@
 						{ required: true, message: '请输入联系电话' },
 						{ type: 'number', message: '电话号码必须是数字' }
 					],
-				},
+                },
+                city:{name:''},
+                list:[],
                 formData:{
                     name:'',
                     address:'',
@@ -335,7 +347,30 @@
                         message:'取消输入'
                     });
                 })
-            }
+            },
+           async suggestAddress(queryString,cb){
+                // if(queryString){
+                    var url='https://elm.cangdu.org/v1/pois';
+                    var cityid=this.city.id;
+                    // console.log(cityid,queryString)
+                    this.$http.get(url,{params:{
+                        type: 'search',
+                        city_id: cityid,
+                        keyword: queryString
+                    }}).then(res=>{
+                        this.list=res.data;
+                    });
+                    //  console.log(this.list);
+                     if (this.list instanceof Array) {
+		    				this.list.map(item => {
+		    					item.value = item.address;
+		    					return item;
+                            })
+		    				cb(this.list)
+	    				}
+                }
+               
+            // }
         }
     }
 </script>
