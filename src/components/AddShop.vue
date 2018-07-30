@@ -74,20 +74,34 @@
                         ></el-time-select>
                     </el-form-item>
                     <el-form-item label="上传店铺头像">
-                        <el-upload class="img-upload" :action='formData.test'>
-                            <img v-if="formData.avatar" src="" class="avatar">
+                        <el-upload class="img-upload" 
+                                :action="baseUrl + '/v1/addimg/shop'"
+                                :show-file-list="false"
+                                :before-upload="beforeImgUpload"
+                                :on-success="avatarUpload">
+                            <img v-if="formData.avatar" :src="baseImgPath+formData.avatar" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="上传营业执照">
-                        <el-upload class="img-upload" :action="formData.test">
-                            <img v-if="formData.lisense" src="" class="avatar">
+                        <el-upload class="img-upload" 
+                                  :action="baseUrl + '/v1/addimg/shop'"
+                                  :show-file-list="false"
+                                  :before-upload="beforeImgUpload"
+                                  :on-success="lisenseUpload"
+                                  >
+                            <img v-if="formData.lisense" :src="baseImgPath+formData.lisense" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="上传餐饮服务许可证">
-                        <el-upload class="img-upload" :action="formData.test">
-                            <img v-if="formData.permission" src="" class="avatar">
+                        <el-upload class="img-upload" 
+                                   :action="baseUrl + '/v1/addimg/shop'"
+                                   :show-file-list="false"
+                                   :before-upload="beforeImgUpload"
+                                   :on-success="permissionUpload"
+                                   >
+                            <img v-if="formData.permission" :src="baseImgPath+formData.permission" class="avatar">
                             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                         </el-upload>
                     </el-form-item>
@@ -143,10 +157,8 @@
 <script>
     import Header from './Header'
     export default {
-        created(){
-            this.$http.get('http://cangdu.org:8001/v1/cities?type=guess').then(res=>{
-                this.city=res.data;
-            })
+        mounted(){
+            this.loadData();
         },
         data(){
             return{
@@ -181,7 +193,8 @@
                     startTime:'',
                     endTime:'',
                     avatar:'',
-                    test:''
+                    lisense:'',
+                    permission:''
                 },
                 activityValue:'请选择',
                 options: [{
@@ -201,49 +214,55 @@
                         label: '进店领券'
                     }],
                 selectedCategory: ['快餐便当', '简餐'],
-                categoryOptions:[{          
-                    value: '1',
-                    label: '异国料理',
-                    children: [{
-                            value: '11',
-                            label: '日韩料理' 
-                            }]
-                    },
-                    {          
-                    value: '2',
-                    label: '快餐便当',
-                    children: [{
-                            value: '21',
-                            label: '简餐' 
-                            }]
-                    },
-                    {          
-                    value: '3',
-                    label: '小吃夜宵',
-                    children: [{
-                            value: '31',
-                            label: '小龙虾' 
-                            }]
-                    },
-                    {          
-                    value: '4',
-                    label: '蔬菜水果',
-                    children: [{
-                            value: '41',
-                            label: '香蕉桔子' 
-                            }]
-                    }],
-                    activities: [{
+                categoryOptions:[],
+                activities: [{
                         icon_name: '减',
                         name: '满减优惠',
                         description: '满30减5，满60减8',
-                    }]
+                    }],
+                baseUrl:'//elm.cangdu.org',
+                baseImgPath:'//elm.cangdu.org/img/'
                 }
             },
         components:{
             Header
         },
         methods:{
+            beforeImgUpload:function(file){
+                // console.log(file);
+                const fileSize=(file.size/1024/1024)<2;
+                const fileType=(file.type=="image/jpeg") || (file.type=="image/png");
+                if(!fileType){
+                    this.$message.error("上传图片格式不正确,只能是jpg/png");
+                };
+                if(!fileSize){
+                    this.$message.error("上传图片大小不能超过2M");
+                }
+            },
+            avatarUpload(res,file){
+                console.log(res);
+                if(res.status==1){
+                    this.formData.avatar=res.image_path;
+                }else{
+                    thsi.$message.error("上传图片失败!");
+                }
+            },
+            lisenseUpload(res,file){
+                
+                if(res.status==1){
+                    this.formData.lisense=res.image_path;
+                }else{
+                    thsi.$message.error("上传图片失败!");
+                }
+            },
+            permissionUpload(res,file){
+                
+                if(res.status==1){
+                    this.formData.permission=res.image_path;
+                }else{
+                    thsi.$message.error("上传图片失败!");
+                }
+            },
             submitForm(formName){
                 this.$refs[formName].validate(valid=>{
                     console.log(valid);
@@ -269,8 +288,7 @@
                                     float_minimum_order_amount:20,
                                     startTime:'',
                                     endTime:'',
-                                    avatar:'',
-                                    test:''
+                                    avatar:''
                                 }
                     }else{
                         this.$notify.error({
@@ -368,9 +386,36 @@
                             })
 		    				cb(this.list)
 	    				}
-                }
-               
-            // }
+                },
+            loadData(){
+                this.$http.get('http://cangdu.org:8001/v1/cities?type=guess').then(res=>{
+                    this.city=res.data;
+                });
+                this.$http.get('http://elm.cangdu.org/shopping/v2/restaurant/category').then(res=>{
+                    // console.log(res.data);
+                    let result=res.data;
+                    result.forEach(item=>{
+                        if(item.sub_categories.length){
+                            const addNew={
+                                label:item.name,
+                                value:item.name,
+                                children:[]
+                            }
+                            item.sub_categories.forEach((subitem,index)=>{
+                                if(index==0){
+                                    return
+                                }
+                                addNew.children.push({
+                                    value: subitem.name,
+						        	label: subitem.name
+                                })
+                            })
+                            // console.log(addNew);
+                            this.categoryOptions.push(addNew);
+                        }
+                    })
+                })
+            }
         }
     }
 </script>

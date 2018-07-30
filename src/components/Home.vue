@@ -50,7 +50,8 @@
              setTimeout(function(){
                  that.loading=false;
                  that.drawLine();
-                },1500);
+                //  console.log(1);
+                },3000);
         },
         data(){
             return{
@@ -66,7 +67,7 @@
             }
         },
         methods: {
-            async getSevenData(){
+           getSevenData(){
     			const apiArr = [[],[],[]];
     			this.sevenDay.forEach(item => {
                     
@@ -81,7 +82,7 @@
                     }))
     			})
                 const promiseArr = [...apiArr[0], ...apiArr[1], ...apiArr[2]];
-                console.log(promiseArr);
+                // console.log(promiseArr);
     			Promise.all(promiseArr).then(res => {
                     // console.log(res);
     				const resArr = [[],[],[]];
@@ -94,8 +95,8 @@
     				console.log(err)
     			})
     		},
-                drawLine() {
-                    console.log(this.sevenData);
+           async drawLine() {
+                    // console.log(this.sevenData);
                 // 基于准备好的dom，初始化echarts实例
                 let myChart = echarts.init(document.getElementById('chart'));
                 // 绘制图表
@@ -126,6 +127,7 @@
                         boundaryGap: false,
                         data: this.sevenDay
                     },
+                    
                     yAxis: [
                         {
                           type: 'value',
