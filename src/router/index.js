@@ -1,24 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '@/components/Index'
-import Home from '@/components/Home'
-import UserList from '@/components/UserList'
-import ShopList from '@/components/ShopList'
-import FoodList from '@/components/FoodList'
-import OrderList from '@/components/OrderList'
-import AdminList from '@/components/AdminList'
-import AddShop from '@/components/AddShop'
-import AddGoods from '@/components/AddGoods'
-import AdminSet from '@/components/AdminSet'
-import Visitor from '@/components/Visitor'
-import VueEdit from '@/components/VueEdit'
-import Explain from '@/components/Explain'
-import Login from '@/components/Login'
+// import Index from '@/components/Index'
+// import Home from '@/components/Home'
+// import UserList from '@/components/UserList'
+// import ShopList from '@/components/ShopList'
+// import FoodList from '@/components/FoodList'
+// import OrderList from '@/components/OrderList'
+// import AdminList from '@/components/AdminList'
+// import AddShop from '@/components/AddShop'
+// import AddGoods from '@/components/AddGoods'
+// import AdminSet from '@/components/AdminSet'
+// import Visitor from '@/components/Visitor'
+// import VueEdit from '@/components/VueEdit'
+// import Explain from '@/components/Explain'
+// import Login from '@/components/Login'
 
 Vue.use(Router)
+const Login = r => require.ensure([], () => r(require('@/components/login')), 'login');
+const Index=r=>require.ensure([], () => r(require('@/components/Index')), 'index');
+const Home = r => require.ensure([], () => r(require('@/components/Home')), 'Home');
+const UserList= r=>require.ensure([],()=>r(require('@/components/UserList'),'UserList'));
+const ShopList= r=>require.ensure([],()=>r(require('@/components/ShopList'),'ShopList'));
+const FoodList= r=>require.ensure([],()=>r(require('@/components/FoodList'),'FoodList'));
+const OrderList= r=>require.ensure([],()=>r(require('@/components/OrderList'),'OrderList'));
+const AdminList= r=>require.ensure([],()=>r(require('@/components/AdminList'),'AdminList'));
+const AddShop= r=>require.ensure([],()=>r(require('@/components/AddShop'),'AddShop'));
+const AddGoods= r=>require.ensure([],()=>r(require('@/components/AddGoods'),'AddGoods'));
+const AdminSet= r=>require.ensure([],()=>r(require('@/components/AdminSet'),'AdminSet'));
+const Visitor= r=>require.ensure([],()=>r(require('@/components/Visitor'),'Visitor'));
+const VueEdit = r=>require.ensure([],()=>r(require('@/components/VueEdit'),'VueEdit'));
+const Explain= r=>require.ensure([],()=>r(require('@/components/Explain'),'Explain'));
 
-export default new Router({
-  routes: [
+
+
+ const routes=[
     {
       path:'/main',
       component:Index,
@@ -85,8 +100,12 @@ export default new Router({
         }
       ]
     },{
-      path:'',
+      path:'/',
       component:Login
     }
-  ]
+  ];
+
+export default new Router({
+  routes,
+	strict: process.env.NODE_ENV !== 'production',
 })

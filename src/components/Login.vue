@@ -15,7 +15,7 @@
                     <el-form-item>
                         <el-button
                          type="primary" 
-                         @click="submit('loginForm')"
+                         @click="submitForm('loginForm')"
                          style="width:100%;font-size:20px;">登 录</el-button>
                     </el-form-item>
                 </el-form>
@@ -31,6 +31,7 @@
     </div>
 </template>
 <script>
+    import {login,getAdminInfo} from '@/api/getData'
     import {mapState,mapActions} from 'vuex';
     import { setTimeout } from 'timers';
     export default{
@@ -52,47 +53,45 @@
             }
         },
         computed: {
-			// ...mapState(['adminInfo'])
+			...mapState(['adminInfo'])
 		},
         mounted(){
             this.showLogin=true;
+            if(!this.adminInfo.id){
+                this.getAdminData()
+            }
+        },
+        computed:{
+            ...mapState(['adminInfo'])
         },
         methods:{
-            submit(formName){
-                // console.log(this.$refs[formName].validate);
-                this.$refs[formName].validate(valid=>{
-                    if(valid){
-                        console.log(this.loginForm.username);
-                        var that=this;
-                        this.$http.post('https://elm.cangdu.org/admin/login',{
-                            user_name:this.loginForm.username,
-                            password:this.loginForm.password
-                        }).then(res=>{
-                            console.log(res);
-                            if(res.data.status==1){
-                                this.$message.success(res.data.success);
-                                this.$router.push('main');
-                            }else{
-                                 this.$message.error(res.data.message);
-                            }
-                        })
-                        
-                        //  setTimeout(()=>{
-                        //     this.$router.push('/main');
-                        // },1500);
-                    }else{
-                        this.$notify.error({
+            ...mapActions(['getAdminData']),
+            async submitForm(formName) {
+				this.$refs[formName].validate(async (valid) => {
+					if (valid) {
+						const res = await login({user_name: this.loginForm.username, password: this.loginForm.password})
+						if (res.status == 1) {
+							this.$message({
+		                        type: 'success',
+		                        message: '登录成功'
+		                    });
+							this.$router.push('main')
+						}else{
+							this.$message({
+		                        type: 'error',
+		                        message: res.message
+		                    });
+						}
+					} else {
+						this.$notify.error({
 							title: '错误',
 							message: '请输入正确的用户名密码',
 							offset: 100
 						});
 						return false;
-                    }
-                })
-                
-               
-            }
-                
+					}
+				});
+			}
         },
         watch: {
 			adminInfo: function (newValue){
@@ -102,7 +101,7 @@
                         type: 'success',
                         message: '检测到您之前登录过，将自动登录'
                     });
-					this.$router.push('manage')
+					this.$router.push('main')
 				}
 			}
 		}

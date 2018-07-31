@@ -106,12 +106,13 @@
         components:{
             Header
         },
-        mounted:function(){
+        mounted(){
             this.$http.get('http://cangdu.org:8001/v1/cities?type=guess').then(res=>{
                 this.city=res.data;
             })
+            var that=this;
             setTimeout(() => {
-                this.loadData();
+                that.loadData();
             }, 500); 
         },
         data(){

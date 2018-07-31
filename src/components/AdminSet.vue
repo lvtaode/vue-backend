@@ -4,19 +4,19 @@
         <header class="title">管理员信息</header>
         <div class="box">
             <ul>
-                <li><span>姓&nbsp;&nbsp;&nbsp;&nbsp;名:</span><span>{{userData.username}}</span></li>
-                <li><span>管理员ID:</span><span>{{userData.id}}</span></li>
-                <li><span>管理员权限:</span><span>普通管理员</span></li>
-                <li><span> 注册时间:</span><span>{{userData.registe_time}}</span></li>
+                <li><span>姓&nbsp;&nbsp;&nbsp;&nbsp;名:</span><span>{{adminInfo.user_name}}</span></li>
+                <li><span>管理员ID:</span><span>{{adminInfo.id}}</span></li>
+                <li><span>管理员权限:</span><span>{{adminInfo.admin}}</span></li>
+                <li><span> 注册时间:</span><span>{{adminInfo.create_time}}</span></li>
                 <li>
                     <span>更换头像:</span>
                     <el-upload
                       class="uploadImg"
-                       :action="baseUrl + '/admin/update/avatar/' + userData.id"
+                       :action="baseUrl + '/admin/update/avatar/'+adminInfo.id"
                        :before-upload="beforeImgUpload"
                        :show-file-list="false"
                        :on-success="uploadImg">
-                      <img v-if="userData.avatar" class="avatar" :src="'//elm.cangdu.org/img/'+userData.avatar">
+                      <img v-if="adminInfo.avatar" class="avatar" :src="baseImgPath + adminInfo.avatar">
                       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>    
                 </li>
@@ -26,30 +26,33 @@
 </template>
 <script>
     import topHead from './Header'
+    import {mapState} from 'vuex'
+    import {baseUrl,baseImgPath} from "@/config/env"
     export default {
         data(){
             return{
-                url:'',
-                userData:[],
-                baseUrl:'//elm.cangdu.org',
-                baseImgPath:'//elm.cangdu.org/img/'
+                baseUrl,
+                baseImgPath
             }
         },
-        mounted(){
-            this.loadData();
-        },
+        // mounted(){
+        //     this.loadData();
+        // },
         components:{
             topHead
         },
+        computed:{
+            ...mapState(['adminInfo'])
+        },
         methods:{
-            loadData(){
-                this.$http.get('https://elm.cangdu.org/v1/user/5').then(res=>{
-                    console.log(res.data);
-                    this.userData=res.data;
-                })
-            },
+            // loadData(){
+            //     this.$http.get('https://elm.cangdu.org/v1/user/5').then(res=>{
+            //         console.log(res.data);
+            //         this.userData=res.data;
+            //     })
+            // },
             beforeImgUpload(file){
-                console.log(file);
+                console.log(this.adminInfo);
                 const fileType=(file.type==="image/png") || (file.type==="image/jpeg");
                 const fileSize=(file.size/1024/1024)<2;
                 if(!fileType){
@@ -60,11 +63,11 @@
                     
                 }
             },
-            uploadImg({status,image_path},file){
-                console.log(image_path);
-                console.log(file);
-                if(status==1){
-                    this.userData.avatar=image_path;
+            uploadImg(res,file){
+                console.log(res);
+                // console.log(file);
+                if(res.status==1){
+                    this.adminInfo.avatar = res.image_path;
                 }else{
                     this.$message.error("上传图片失败");
                 }

@@ -5,7 +5,7 @@
 			<el-breadcrumb-item v-for="(item, index) in $route.meta" v-bind:key="index">{{item}}</el-breadcrumb-item>
         </el-breadcrumb>
 		<el-dropdown placement="top" style="margin-right:50px" @command="handleCommand">
-			<img src="../assets/timg.jpg" class="avator">
+			<img :src="baseImgPath + adminInfo.avatar" class="avator">
 			<el-dropdown-menu  slot="dropdown" >
 				<el-dropdown-item command="home">首页</el-dropdown-item>
 				<el-dropdown-item command="singout">退出</el-dropdown-item>
@@ -14,13 +14,27 @@
     </div>
 </template>
 <script>
-	export default{
+ import {signout} from '@/api/getData'
+ import {baseImgPath} from '@/config/env'
+ import {mapActions,mapState} from 'vuex'
+ 	export default{
+		 data(){
+			 return{
+				 baseImgPath
+			 }
+		 },
+		 computed:{
+			 ...mapState(['adminInfo']),
+		 },
 		methods:{
-			handleCommand(command){
+			...mapActions(['getAdminData']),
+		    async handleCommand(command){
 				if(command=="home"){
 					this.$router.push('/main')
 				}else if(command=="singout"){
-					
+					// console.log(signout);
+					// const res=await signout();
+					// console.log(res);
 					this.$router.push('/');
 					this.$message.success('退出成功');
 				}
